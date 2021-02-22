@@ -249,6 +249,28 @@ show_devices() {
 
 ######################################################################
 ##																	##
+##                 System selection function 					##
+##																	##
+######################################################################
+
+# virtual console keymap
+set_desktop() { 
+	
+	DESKTOPS=""
+    for i in $(cat ./desktop/gnome-packagelist.txt | sort); do
+        DESKTOPS="${DESKTOPS} ${i} -"
+    done
+    
+    dialog --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_VCKeymapTitle " \
+    --menu "$_VCKeymapBody" 20 40 16 ${DESKTOPS} 2>${ANSWER} || prep_sys_menu 
+    DESKTOP=$(cat ${ANSWER})
+    
+	echo -e "DESKTOP=${DESKTOP}\nFONT=${FONT}" > /tmp/packagelist.txt
+  }
+
+
+######################################################################
+##																	##
 ##                 Configuration Functions							##
 ##																	##
 ######################################################################
@@ -1813,8 +1835,8 @@ prep_sys_menu() {
 	   fi
 	fi
 	
-	dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_PrepMenuTitle " --menu "$_PrepMenuBody" 0 0 8 \
-	"1" "$_VCKeymapTitle" \
+	dialog --default-item ${HIGHLIGHT_SUB} --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " System install selection " --menu "$_PrepMenuBody" 0 0 8 \
+	"1" "Select Desktop" \
 	"2" "$_PrepKBLayout" \
 	"3" "$_DevShowOpt" \
 	"4" "$_PrepPartDisk" \
@@ -1825,7 +1847,7 @@ prep_sys_menu() {
 
     HIGHLIGHT_SUB=$(cat ${ANSWER})
 	case $(cat ${ANSWER}) in
-        "1") set_keymap 
+        "1") set_desktop 
              ;;
         "2") set_xkbmap
 			;;
