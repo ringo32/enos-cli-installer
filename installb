@@ -257,15 +257,16 @@ show_devices() {
 set_desktop() { 
 	
 	DESKTOPS=""
-    for i in $(cat ./desktop/gnome-packagelist.txt | sort); do
+    for i in $(cat ./desktop/desktop-packagelist.txt | sort); do
         DESKTOPS="${DESKTOPS} ${i} -"
     done
     
-    dialog --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " $_VCKeymapTitle " \
-    --menu "$_VCKeymapBody" 20 40 16 ${DESKTOPS} 2>${ANSWER} || prep_sys_menu 
+    dialog --backtitle "$VERSION - $SYSTEM ($ARCHI)" --title " Select Desktop " \
+    --menu "abc" 20 40 16 ${DESKTOPS} 2>${ANSWER} || prep_sys_menu 
     DESKTOP=$(cat ${ANSWER})
     
-	echo -e "DESKTOP=${DESKTOP}\nFONT=${FONT}" > /tmp/packagelist.txt
+    cat ./desktop/$DESKTOP-packagelist.txt > /tmp/packagelist.txt
+	#echo -e "DESKTOP=${DESKTOP}\nFONT=${FONT}" > /tmp/packagelist.txt
   }
 
 
