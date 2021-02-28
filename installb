@@ -43,7 +43,7 @@ if [[ $(hostname) == "RebornOS" ]]; then ISO_USER="reborn"; else ISO_USER="liveu
 VERSION="Offline Installation Framework 1.0"		# Installer Name / Version
 
 # This should not need to be changed
-TRANS_SRC="/offline_installer"							# Dir where translation files are stored
+TRANS_SRC=".local/share/enos-cli-install/language"							# Dir where translation files are stored
 
 #								#
 # Other variables for installer	#
@@ -124,32 +124,32 @@ select_language() {
 	"9" $"Magyar             (hu_HU)" 2>${ANSWER}
 
 	case $(cat ${ANSWER}) in
-        "1") source ./offline_installer/english.trans
+        "1") source ./$TRANS_SRC/english.trans
              CURR_LOCALE="en_US.UTF-8"
              ;;
-        "2") source ./offline_installer/spanish.trans
+        "2") source ./$TRANS_SRC/spanish.trans
              CURR_LOCALE="es_ES.UTF-8"
              ;; 
-        "3") source /offline_installer/portuguese_brasil.trans
+        "3") source /$TRANS_SRC/portuguese_brasil.trans
 			 CURR_LOCALE="pt_BR.UTF-8"
 			 ;;
-        "4") source /offline_installer/portuguese.trans
+        "4") source /$TRANS_SRC/portuguese.trans
 			 CURR_LOCALE="pt_PT.UTF-8"
 			 ;;		
-		"5") source /offline_installer/french.trans
+		"5") source /$TRANS_SRC/french.trans
              CURR_LOCALE="fr_FR.UTF-8"
              ;;	 
-        "6") source /offline_installer/russian.trans
+        "6") source /$TRANS_SRC/russian.trans
              CURR_LOCALE="ru_RU.UTF-8"
              FONT="LatKaCyrHeb-14.psfu"
              ;;
-        "7") source /offline_installer/italian.trans
+        "7") source /$TRANS_SRC/italian.trans
              CURR_LOCALE="it_IT.UTF-8"
              ;;
-        "8") source /offline_installer/dutch.trans
+        "8") source /$TRANS_SRC/dutch.trans
              CURR_LOCALE="nl_NL.UTF-8"
              ;;
-        "9") source /offline_installer/hungarian.trans
+        "9") source /$TRANS_SRC/hungarian.trans
              CURR_LOCALE="hu_HU.UTF-8"
              FONT="lat2-16.psfu"
              ;;
@@ -267,8 +267,9 @@ show_devices() {
 # virtual console keymap
 set_desktop() { 
 	
+	
 	DESKTOPS=""
-    for i in $(cat ./desktop/desktop-packagelist.txt | sort); do
+    for i in $(cat ./.local/share/enos-cli-install/desktop/desktop-packagelist.txt | sort); do
         DESKTOPS="${DESKTOPS} ${i} -"
     done
     
@@ -276,7 +277,7 @@ set_desktop() {
     --menu "abc" 20 40 16 ${DESKTOPS} 2>${ANSWER} || prep_sys_menu 
     DESKTOP=$(cat ${ANSWER})
     
-    cat ./desktop/$DESKTOP-packagelist.txt > /tmp/packagelist.txt
+    cat ./.local/share/enos-cli-install/desktop/$DESKTOP-packagelist.txt > /tmp/packagelist.txt
 	#echo -e "DESKTOP=${DESKTOP}\nFONT=${FONT}" > /tmp/packagelist.txt
   }
 
