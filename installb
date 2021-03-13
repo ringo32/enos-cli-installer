@@ -1466,7 +1466,7 @@ install_root(){
   clear
     echo "Copying filesystem. Please wait, this may take some time"
      pacstrap ${MOUNTPOINT}/ base linux linux-firmware endeavouros-keyring endeavouros-mirrorlist eos-hooks eos-bash-shared ${PACKAGELIST}
-     echo -e "\n[endeaouros]" >> /mnt/etc/pacman.conf;echo "SigLevel = PackageRequired" >> /mnt/etc/pacman.conf;echo "Include = /etc/pacman.d/endeavouros-mirrorlist" >> /mnt/etc/pacman.conf
+     echo -e "\n[endeavouros]" >> /mnt/etc/pacman.conf;echo "SigLevel = PackageRequired" >> /mnt/etc/pacman.conf;echo "Include = /etc/pacman.d/endeavouros-mirrorlist" >> /mnt/etc/pacman.conf
      arch_chroot "pacman -Syy"
       
 
