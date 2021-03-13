@@ -27,11 +27,11 @@
 ISO_HOST=$(hostname)                           		# ISO Host Name
 
 # This MUST be the same as the live account
-if [[ $(hostname) == "RebornOS" ]]; then ISO_USER="reborn"; else ISO_USER="liveuser" ; fi
+if [[ $(hostname) == "EndeavourOS" ]]; then ISO_USER="liveuser"; else ISO_USER="liveuser" ; fi
 #ISO_USER="liveuser"           						# Live user account.
 
 # Call this what you like
-VERSION="Offline Installation Framework 1.0"		# Installer Name / Version
+VERSION="Online Installation Framework 1.0"		# Installer Name / Version
 
 # This should not need to be changed
 TRANS_SRC=".local/share/enos-cli-install/language"							# Dir where translation files are stored
@@ -50,7 +50,7 @@ XKBMAP="us"      	    							# X11 keyboard layout. Default is "us"
 ZONE=""               								# For time
 SUBZONE=""            								# For time
 LOCALE="en_US.UTF-8"  								# System locale. Default is "en_US.UTF-8"
-
+PACKAGELIST=$(cat /tmp/packagelist.txt)
 # Architecture
 ARCHI=$(uname -m)     								# Display whether 32 or 64 bit system
 SYSTEM="Unknown"     								# Display whether system is BIOS or UEFI. Default is "unknown"
@@ -1465,7 +1465,10 @@ install_root(){
 
   clear
     echo "Copying filesystem. Please wait, this may take some time"
-     cp -ax /run/archiso/sfs/airootfs/* ${MOUNTPOINT}/ 2>/tmp/.errlog
+     pacstrap ${MOUNTPOINT}/ base linux linux-firmware endeavouros-keyring endeavouros-mirrorlist eos-hooks eos-bash-shared ${PACKAGELIST}
+     echo -e "\n[endeaouros]" >> /mnt/etc/pacman.conf;echo "SigLevel = PackageRequired" >> /mnt/etc/pacman.conf;echo "Include = /etc/pacman.d/endeavouros-mirrorlist" >> /mnt/etc/pacman.conf
+     arch_chroot "pacman -Syy"
+      
 
   check_for_error
   
@@ -1503,39 +1506,6 @@ install_root(){
  
     arch_chroot "pacman -Rns cnchi --noconfirm"
     
-# Remove cnchi stuff
-rm -rf ${MOUNTPOINT}/usr/share/polkit-1/actions/com.antergos.pkexec.cnchi.policy
-rm -rf ${MOUNTPOINT}/var/cache/pacman/pkg/cnchi-0.14.410-3-any.pkg.tar.xz
-rm -rf ${MOUNTPOINT}/usr/share/polkit-1/actions/com.antergos.pkexec.cnchi.policy
-rm -rf ${MOUNTPOINT}/var/cache/pacman/pkg/cnchi-0.14.410-3-any.pkg.tar.xz
-rm -rf ${MOUNTPOINT}/etc/cnchi.conf
-rm -rf ${MOUNTPOINT}/etc/skel/.config/autostart/cnchi.desktop
-rm -rf ${MOUNTPOINT}/home/antergos/.config/autostart/cnchi.desktop
-rm -rf ${MOUNTPOINT}/home/antergos/cnchi.txt
-rm -rf ${MOUNTPOINT}/root/.config/autostart/cnchi.desktop
-
-# Remove plymouth stuff
-#rm -rf ${MOUNTPOINT}/etc/initcpio/hooks/plymouth.initcpio_hook
-#rm -rf ${MOUNTPOINT}/etc/initcpio/install/plymouth.initcpio_install
-#rm -rf ${MOUNTPOINT}/home/antergos/plymouth.txt
-#rm -rf ${MOUNTPOINT}/run/plymouth
-#rm -rf ${MOUNTPOINT}/usr/share/icons/Numix-Square/48/apps/debian-plymouth-manager.svg
-#rm -rf ${MOUNTPOINT}/var/cache/pacman/pkg/plymouth-0.9.2.r2031-1-x86_64.pkg.tar.xz
-#rm -rf ${MOUNTPOINT}/var/cache/pacman/pkg/plymouth-theme-antergos-1.0-1-any.pkg.tar.xz
-#rm -rf ${MOUNTPOINT}/var/lib/plymouth
-
-# Remove live media config script
-#rm -rf ${MOUNTPOINT}/etc/systemd/system/livecd.service
-
-# Change antergos lightdm autologin
-#sed -i 's/pam-autologin-service=lightdm-autologin/#pam-autologin-service=lightdm-autologin/'g ${MOUNTPOINT}/etc/lightdm/lightdm.conf
-#sed -i 's/autologin-user=antergos/#autologin-user=/'g ${MOUNTPOINT}/etc/lightdm/lightdm.conf
-#sed -i 's/autologin-user-timeout=0/#autologin-user-timeout=0/'g ${MOUNTPOINT}/etc/lightdm/lightdm.conf
-
-# RebornOS stuff, there are others to be tracked and included, like installer and welcome screen poping up in offline insalled system
-
-rm -rf ${MOUNTPOINT}/usr/bin/{auto-partition.sh,cnchi,cnchi-git,cnchi-rank.sh,cnchi-start.sh,install-antergos.sh,internet.sh,pacman-boot.sh,rank-mirrors.sh,update-mirrors}
-
 ########################################################################################
 
 
